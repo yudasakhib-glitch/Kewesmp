@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>X-KewerSMP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050505;
+  --surface:#101010;
+  --surface-2:#161616;
+  --surface-3:#1c1c1c;
+  --green:#5DFF3D;
+  --emerald:#18C964;
+  --white:#FFFFFF;
+  --muted:#8b978e;
+  --muted-dim:#5c655f;
+  --border:rgba(93,255,61,0.14);
+  --border-soft:rgba(255,255,255,0.07);
+  --danger:#ff5d6c;
+  --radius:18px;
+  --radius-sm:12px;
+  --font-display:'Chakra Petch', sans-serif;
+  --font-body:'Inter', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.4;
+  overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea{font-family:inherit;color:inherit;}
+::selection{background:var(--green);color:#000;}
+
+/* focus visibility */
+:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:6px;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:8px;}
+::-webkit-scrollbar-track{background:transparent;}
+
+@media (prefers-reduced-motion: no-preference){
+  .animated{transition:all .18s ease;}
+  .pulse-dot{animation:pulse 1.8s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(93,255,61,.55);}
+    70%{box-shadow:0 0 0 8px rgba(93,255,61,0);}
+    100%{box-shadow:0 0 0 0 rgba(93,255,61,0);}
+  }
+  .glow-hover:hover{box-shadow:0 0 24px -6px rgba(93,255,61,.45);}
+  @keyframes floatIn{
+    from{opacity:0;transform:translateY(6px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .post-card{animation:floatIn .3s ease both;}
+  @keyframes shimmer{
+    0%{background-position:-400px 0;}
+    100%{background-position:400px 0;}
+  }
+  .skel{background:linear-gradient(90deg,#141414 0%,#1d1d1d 50%,#141414 100%);background-size:400px 100%;animation:shimmer 1.3s infinite;}
+}
+
+/* ===== APP GRID ===== */
+.app{
+  display:grid;
+  grid-template-columns:275px minmax(0,600px) 350px;
+  justify-content:center;
+  min-height:100vh;
+  max-width:1300px;
+  margin:0 auto;
+}
+
+/* ===== LOGO ===== */
+.logo{
+  display:flex;align-items:center;gap:10px;
+  padding:18px 12px 8px 12px;
+}
+.logo-mark{
+  width:38px;height:38px;flex:0 0 auto;
+  position:relative;
+}
+.logo-mark svg{width:100%;height:100%;filter:drop-shadow(0 0 8px rgba(93,255,61,.55));}
+.logo-word{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:17px;
+  letter-spacing:.2px;
+}
+.logo-word span{color:var(--green);}
+
+/* ===== LEFT SIDEBAR ===== */
+.sidebar-left{
+  border-right:1px solid var(--border-soft);
+  padding:0 8px 16px 8px;
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;
+}
+.nav{
+  display:flex;flex-direction:column;
+  gap:2px;margin-top:6px;
+}
+.nav-item{
+  display:flex;align-items:center;gap:16px;
+  padding:12px 14px;
+  border-radius:999px;
+  color:var(--white);
+  font-size:16px;
+  font-weight:500;
+  background:transparent;
+  border:none;
+  width:100%;
+  text-align:left;
+}
+.nav-item svg{width:22px;height:22px;flex:0 0 auto;stroke:currentColor;}
+.nav-item:hover{background:var(--surface-2);}
+.nav-item.active{color:var(--green);font-weight:700;}
+.nav-item.active svg{stroke:var(--green);filter:drop-shadow(0 0 5px rgba(93,255,61,.5));}
+.nav-badge{
+  margin-left:auto;background:var(--green);color:#000;
+  font-size:11px;font-weight:700;border-radius:999px;
+  padding:1px 7px;
+}
+
+.post-btn{
+  margin-top:16px;
+  background:linear-gradient(135deg,var(--green),var(--emerald));
+  color:#04160a;
+  border:none;
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:15px;
+  padding:14px 0;
+  border-radius:999px;
+  box-shadow:0 0 22px -4px rgba(93,255,61,.6);
+  width:100%;
+}
+.post-btn:hover{transform:translateY(-1px);box-shadow:0 0 30px -2px rgba(93,255,61,.8);}
+.post-btn:active{transform:translateY(0);}
+
+.mini-profile{
+  margin-top:auto;
+  display:flex;align-items:center;gap:10px;
+  padding:10px;border-radius:999px;
+  background:transparent;border:none;color:var(--white);width:100%;
+}
+.mini-profile:hover{background:var(--surface-2);}
+.mini-profile .mp-text{text-align:left;overflow:hidden;}
+.mini-profile .mp-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mini-profile .mp-handle{font-size:13px;color:var(--muted);}
+
+.avatar{
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;color:#04160a;
+  flex:0 0 auto;
+  background:linear-gradient(135deg,var(--green),var(--emerald));
+}
+
+/* ===== CENTER FEED ===== */
+.center{
+  border-right:1px solid var(--border-soft);
+  min-height:100vh;
+}
+.center-header{
+  position:sticky;top:0;z-index:5;
+  background:rgba(5,5,5,.85);
+  backdrop-filter:blur(10px);
+  padding:14px 18px;
+  border-bottom:1px solid var(--border-soft);
+}
+.center-header h1{
+  font-family:var(--font-display);font-size:19px;font-weight:700;
+}
+.center-header .sub{font-size:12px;color:var(--muted);margin-top:2px;}
+
+.tabs{display:flex;border-bottom:1px solid var(--border-soft);}
+.tab-btn{
+  flex:1;background:none;border:none;color:var(--muted);
+  padding:14px 0;font-weight:600;font-size:14px;position:relative;
+}
+.tab-btn.active{color:var(--white);}
+.tab-btn.active::after{
+  content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:56px;height:3px;background:var(--green);border-radius:3px;
+  box-shadow:0 0 8px rgba(93,255,61,.7);
+}
+
+.composer{
+  display:flex;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border-soft);
+}
+.composer .avatar{width:44px;height:44px;font-size:15px;}
+.composer-body{flex:1;}
+.composer textarea{
+  width:100%;background:none;border:none;color:var(--white);
+  font-size:17px;resize:none;min-height:52px;line-height:1.4;
+}
+.composer textarea::placeholder{color:var(--muted-dim);}
+.composer-row{
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid var(--border-soft);padding-top:10px;margin-top:8px;
+}
+.composer-icons{display:flex;gap:6px;color:var(--green);}
+.composer-icons button{
+  background:none;border:none;color:var(--green);
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.composer-icons button:hover{background:rgba(93,255,61,.12);}
+.composer-icons svg{width:19px;height:19px;stroke:currentColor;}
+.char-count{font-size:12px;color:var(--muted);margin-right:10px;}
+.char-count.warn{color:var(--danger);}
+.send-btn{
+  background:linear-gradient(135deg,var(--green),var(--emerald));
+  color:#04160a;border:none;font-weight:700;font-family:var(--font-display);
+  padding:9px 20px;border-radius:999px;font-size:14px;
+}
+.send-btn:disabled{opacity:.35;cursor:not-allowed;}
+.send-btn:not(:disabled):hover{box-shadow:0 0 18px -2px rgba(93,255,61,.7);}
+
+/* ===== POST CARD ===== */
+.feed{}
+.post-card{
+  display:flex;gap:12px;padding:16px 18px;
+  border-bottom:1px solid var(--border-soft);
+}
+.post-card:hover{background:rgba(255,255,255,.015);}
+.post-card .avatar{width:44px;height:44px;font-size:15px;}
+.post-main{flex:1;min-width:0;}
+.post-head{display:flex;align-items:center;gap:6px;font-size:14px;flex-wrap:wrap;}
+.post-head .name{font-weight:700;}
+.post-head .handle,.post-head .dot,.post-head .time{color:var(--muted);}
+.badge-verified{
+  width:15px;height:15px;color:var(--green);flex:0 0 auto;
+}
+.badge-online{
+  width:8px;height:8px;border-radius:50%;background:var(--green);
+  display:inline-block;box-shadow:0 0 6px var(--green);
+}
+.post-text{font-size:15px;margin-top:2px;white-space:pre-wrap;word-wrap:break-word;}
+.post-text .tag{color:var(--green);font-weight:600;}
+.post-media{
+  margin-top:10px;border-radius:var(--radius-sm);overflow:hidden;
+  border:1px solid var(--border-soft);
+  min-height:180px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:13px;
+  background:linear-gradient(135deg,#0c150f,#0a0a0a);
+  position:relative;
+}
+.post-media::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 20%, rgba(93,255,61,.15), transparent 60%);
+}
+.post-actions{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:12px;max-width:420px;color:var(--muted);
+}
+.pa-btn{
+  display:flex;align-items:center;gap:6px;background:none;border:none;
+  color:var(--muted);font-size:13px;padding:6px;border-radius:999px;
+}
+.pa-btn svg{width:18px;height:18px;stroke:currentColor;fill:none;}
+.pa-btn:hover{color:var(--green);background:rgba(93,255,61,.1);}
+.pa-btn.reply:hover{color:#7dd3ff;background:rgba(125,211,255,.1);}
+.pa-btn.repost.active{color:var(--emerald);}
+.pa-btn.repost.active:hover{background:rgba(24,201,100,.12);}
+.pa-btn.like.active{color:#ff5d9e;}
+.pa-btn.like.active svg{fill:#ff5d9e;}
+.pa-btn.like.active:hover{background:rgba(255,93,158,.12);}
+.pa-btn.bookmark.active{color:var(--green);}
+.pa-btn.bookmark.active svg{fill:var(--green);}
+
+.repost-flag{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;padding:8px 18px 0 18px;}
+.repost-flag svg{width:14px;height:14px;stroke:currentColor;}
+
+.empty-state{
+  padding:60px 24px;text-align:center;color:var(--muted);
+}
+.empty-state h3{font-family:var(--font-display);color:var(--white);font-size:18px;margin-bottom:6px;}
+
+/* ===== RIGHT SIDEBAR ===== */
+.sidebar-right{padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;}
+.search-box{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border-soft);
+  border-radius:999px;padding:11px 16px;margin-bottom:16px;
+}
+.search-box svg{width:17px;height:17px;stroke:var(--muted);flex:0 0 auto;}
+.search-box input{background:none;border:none;color:var(--white);width:100%;font-size:14px;}
+.search-box input::placeholder{color:var(--muted-dim);}
+
+.panel{
+  background:var(--surface);border:1px solid var(--border-soft);
+  border-radius:var(--radius);margin-bottom:16px;overflow:hidden;
+}
+.panel h3{
+  font-family:var(--font-display);font-size:16px;padding:14px 16px 10px 16px;
+}
+.server-card{padding:0 16px 16px 16px;}
+.server-status-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.server-status-row .badge-online{position:relative;}
+.server-status-row .badge-online::after{
+  content:"";position:absolute;inset:0;border-radius:50%;background:var(--green);
+}
+.server-status-row span.label{font-size:13px;color:var(--green);font-weight:700;}
+.server-ip{
+  font-family:monospace;background:var(--surface-2);border:1px dashed var(--border);
+  border-radius:8px;padding:8px 10px;font-size:13px;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+}
+.server-players{font-size:13px;color:var(--muted);margin-bottom:12px;}
+.join-btn{
+  width:100%;background:linear-gradient(135deg,var(--green),var(--emerald));
+  border:none;color:#04160a;font-weight:700;font-family:var(--font-display);
+  padding:10px;border-radius:10px;
+}
+.join-btn:hover{box-shadow:0 0 18px -2px rgba(93,255,61,.7);}
+
+.trend-item,.user-item,.community-item{
+  display:flex;align-items:center;gap:10px;padding:10px 16px;
+}
+.trend-item{display:block;}
+.trend-item:hover,.user-item:hover{background:var(--surface-2);cursor:pointer;}
+.trend-cat{font-size:12px;color:var(--muted);}
+.trend-tag{font-weight:700;font-size:14px;margin:2px 0;color:var(--white);}
+.trend-count{font-size:12px;color:var(--muted);}
+
+.user-item .u-text{flex:1;min-width:0;}
+.u-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.u-handle{font-size:13px;color:var(--muted);}
+.follow-btn{
+  background:var(--white);color:#000;border:none;font-weight:700;font-size:13px;
+  padding:7px 16px;border-radius:999px;flex:0 0 auto;
+}
+.follow-btn.following{background:transparent;color:var(--white);border:1px solid var(--muted-dim);}
+.follow-btn.following:hover{border-color:var(--danger);color:var(--danger);}
+.follow-btn:not(.following):hover{background:#e2e2e2;}
+
+.see-more{display:block;padding:12px 16px;color:var(--green);font-size:14px;font-weight:600;}
+.see-more:hover{background:var(--surface-2);}
+
+/* ===== EXPLORE / GRID VIEWS ===== */
+.hashtag-strip{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--border-soft);}
+.chip{
+  background:var(--surface-2);border:1px solid var(--border-soft);color:var(--muted);
+  font-size:13px;padding:7px 14px;border-radius:999px;font-weight:600;
+}
+.chip.active,.chip:hover{color:var(--green);border-color:var(--border);}
+
+/* ===== NOTIFICATIONS ===== */
+.notif-item{
+  display:flex;gap:12px;padding:16px 18px;border-bottom:1px solid var(--border-soft);
+}
+.notif-item.unread{background:rgba(93,255,61,.04);}
+.notif-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.notif-icon.like{background:rgba(255,93,158,.15);color:#ff5d9e;}
+.notif-icon.repost{background:rgba(24,201,100,.15);color:var(--emerald);}
+.notif-icon.follow{background:rgba(93,255,61,.15);color:var(--green);}
+.notif-icon.reply{background:rgba(125,211,255,.15);color:#7dd3ff;}
+.notif-icon svg{width:18px;height:18px;stroke:currentColor;fill:none;}
+.notif-icon.like svg{fill:currentColor;}
+.notif-text{font-size:14px;}
+.notif-text b{font-weight:700;}
+.notif-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+
+/* ===== MESSAGES ===== */
+.msg-layout{display:flex;height:calc(100vh - 60px);}
+.msg-list{width:280px;border-right:1px solid var(--border-soft);overflow-y:auto;}
+.convo{display:flex;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border-soft);}
+.convo:hover,.convo.active{background:var(--surface-2);cursor:pointer;}
+.convo .c-name{font-weight:700;font-size:14px;}
+.convo .c-last{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px;}
+.unread-dot{width:8px;height:8px;border-radius:50%;background:var(--green);margin-left:auto;flex:0 0 auto;align-self:center;}
+.chat-panel{flex:1;display:flex;flex-direction:column;}
+.chat-head{padding:14px 18px;border-bottom:1px solid var(--border-soft);font-weight:700;display:flex;align-items:center;gap:10px;}
+.chat-body{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;}
+.bubble{max-width:65%;padding:10px 14px;border-radius:16px;font-size:14px;}
+.bubble.them{background:var(--surface-2);align-self:flex-start;border-bottom-left-radius:4px;}
+.bubble.me{background:linear-gradient(135deg,var(--green),var(--emerald));color:#04160a;align-self:flex-end;border-bottom-right-radius:4px;font-weight:600;}
+.chat-input-row{display:flex;gap:10px;padding:14px 18px;border-top:1px solid var(--border-soft);}
+.chat-input-row input{flex:1;background:var(--surface-2);border:1px solid var(--border-soft);border-radius:999px;padding:10px 16px;color:var(--white);}
+.chat-input-row button{background:var(--green);border:none;color:#04160a;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.chat-input-row svg{width:18px;height:18px;}
+.msg-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);}
+
+/* ===== COMMUNITIES ===== */
+.comm-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 18px;}
+.comm-card{
+  background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--radius-sm);
+  overflow:hidden;
+}
+.comm-banner{height:70px;background:linear-gradient(135deg,#0e1c12,#0a0a0a);position:relative;}
+.comm-banner::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(93,255,61,.25),transparent 60%);}
+.comm-body{padding:12px;}
+.comm-body h4{font-size:15px;margin-bottom:4px;}
+.comm-body p{font-size:13px;color:var(--muted);margin-bottom:10px;}
+.comm-members{font-size:12px;color:var(--muted-dim);margin-bottom:10px;}
+.join-comm-btn{
+  width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);
+  background:transparent;color:var(--green);font-weight:700;font-size:13px;
+}
+.join-comm-btn.joined{background:var(--green);color:#04160a;border-color:var(--green);}
+
+/* ===== PROFILE ===== */
+.profile-banner{
+  height:150px;background:linear-gradient(135deg,#0e1c12,#0a0a0a);position:relative;
+}
+.profile-banner::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 25% 30%,rgba(93,255,61,.3),transparent 55%);}
+.profile-head{padding:0 18px 14px 18px;position:relative;}
+.profile-avatar{
+  width:96px;height:96px;font-size:32px;border:4px solid var(--bg);
+  margin-top:-48px;
+}
+.profile-name-row{display:flex;align-items:center;justify-content:space-between;margin-top:10px;}
+.profile-name-row h2{font-family:var(--font-display);font-size:20px;display:flex;align-items:center;gap:6px;}
+.profile-handle{color:var(--muted);font-size:14px;margin-top:2px;}
+.profile-bio{font-size:14px;margin-top:12px;}
+.profile-meta{display:flex;gap:16px;margin-top:10px;font-size:13px;color:var(--muted);flex-wrap:wrap;}
+.profile-meta span{display:flex;align-items:center;gap:5px;}
+.profile-stats{display:flex;gap:18px;margin-top:12px;font-size:14px;}
+.profile-stats b{color:var(--white);}
+.profile-stats .lbl{color:var(--muted);}
+
+/* ===== SETTINGS ===== */
+.settings-group{padding:16px 18px;border-bottom:1px solid var(--border-soft);}
+.settings-group h4{font-family:var(--font-display);font-size:15px;margin-bottom:10px;color:var(--green);}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;}
+.settings-row .s-title{font-size:14px;font-weight:600;}
+.settings-row .s-desc{font-size:12px;color:var(--muted);}
+.switch{position:relative;width:42px;height:24px;flex:0 0 auto;}
+.switch input{opacity:0;width:0;height:0;}
+.switch .track{position:absolute;inset:0;background:var(--surface-3);border-radius:999px;transition:.18s;border:1px solid var(--border-soft);}
+.switch .track::before{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;background:var(--muted);border-radius:50%;transition:.18s;}
+.switch input:checked + .track{background:rgba(93,255,61,.25);border-color:var(--green);}
+.switch input:checked + .track::before{transform:translateX(18px);background:var(--green);box-shadow:0 0 6px var(--green);}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:1100px){
+  .app{grid-template-columns:88px minmax(0,1fr) 340px;}
+  .logo-word,.nav-item span,.mp-text{display:none;}
+  .logo{justify-content:center;}
+  .nav-item{justify-content:center;padding:14px;}
+  .nav-badge{position:absolute;margin-left:16px;margin-top:-18px;}
+  .mini-profile{justify-content:center;}
+  .post-btn{font-size:0;padding:14px 0;}
+  .post-btn::after{content:"+";font-size:20px;}
+}
+@media (max-width:900px){
+  .app{grid-template-columns:88px minmax(0,1fr);}
+  .sidebar-right{display:none;}
+}
+@media (max-width:600px){
+  .app{grid-template-columns:1fr;}
+  .sidebar-left{
+    position:fixed;bottom:0;left:0;right:0;top:auto;height:auto;
+    flex-direction:row;border-right:none;border-top:1px solid var(--border-soft);
+    background:rgba(5,5,5,.95);backdrop-filter:blur(10px);z-index:20;padding:6px 4px;
+  }
+  .logo,.post-btn,.mini-profile{display:none;}
+  .nav{flex-direction:row;width:100%;justify-content:space-around;}
+  .center{padding-bottom:64px;}
+  .comm-grid{grid-template-columns:1fr;}
+}
+
+.view{display:none;}
+.view.active{display:block;}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ================= LEFT SIDEBAR ================= -->
+  <aside class="sidebar-left">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 48 48" fill="none">
+          <defs>
+            <linearGradient id="gradMark" x1="0" y1="0" x2="48" y2="48">
+              <stop offset="0" stop-color="#5DFF3D"/>
+              <stop offset="1" stop-color="#18C964"/>
+            </linearGradient>
+          </defs>
+          <polygon points="24,3 44,15 44,33 24,45 4,33 4,15" stroke="url(#gradMark)" stroke-width="2.5" fill="#0a0f0b"/>
+          <polygon points="24,13 35,19.5 35,28.5 24,35 13,28.5 13,19.5" fill="url(#gradMark)" opacity="0.9"/>
+          <rect x="20.5" y="20" width="7" height="7" fill="#050505"/>
+        </svg>
+      </div>
+      <div class="logo-word">X-<span>Kewer</span>SMP</div>
+    </div>
+
+    <nav class="nav" id="navList">
+      <button class="nav-item active" data-view="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-view="explore">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span>Explore</span>
+      </button>
+      <button class="nav-item" data-view="notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span>Notifications</span>
+        <span class="nav-badge" id="notifBadge">3</span>
+      </button>
+      <button class="nav-item" data-view="messages">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span>Messages</span>
+        <span class="nav-badge" id="msgBadge">2</span>
+      </button>
+      <button class="nav-item" data-view="communities">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M2 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1"/><circle cx="18" cy="8" r="2.5"/><path d="M17 12.5a4.5 4.5 0 0 1 5 4.5v1"/></svg>
+        <span>Communities</span>
+      </button>
+      <button class="nav-item" data-view="bookmarks">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+        <span>Bookmarks</span>
+      </button>
+      <button class="nav-item" data-view="profile">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        <span>Profile</span>
+      </button>
+      <button class="nav-item" data-view="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <button class="post-btn animated" id="sidebarPostBtn">Post</button>
+
+    <button class="mini-profile animated">
+      <div class="avatar" style="width:38px;height:38px;font-size:13px;">YO</div>
+      <div class="mp-text">
+        <div class="mp-name">You</div>
+        <div class="mp-handle">@you_kewersmp</div>
+      </div>
+    </button>
+  </aside>
+
+  <!-- ================= CENTER ================= -->
+  <main class="center">
+
+    <!-- HOME VIEW -->
+    <section class="view active" id="view-home">
+      <div class="center-header">
+        <h1>Home</h1>
+        <div class="sub">Season 3 · Floating Islands update is live</div>
+      </div>
+
+      <div class="composer">
+        <div class="avatar">YO</div>
+        <div class="composer-body">
+          <textarea id="postInput" placeholder="What's happening on the server?" maxlength="280" rows="2"></textarea>
+          <div class="composer-row">
+            <div class="composer-icons">
+              <button title="Image" type="button"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="9" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg></button>
+              <button title="GIF" type="button"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M8 9v6M8 12h1.5M13 9v6h1.7a1.8 1.8 0 0 0 0-6H13z"/><path d="M19 9h-2.5v6"/><path d="M16.5 12h2"/></svg></button>
+              <button title="Poll" type="button"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M12 20V4M20 20v-6"/></svg></button>
+              <button title="Emoji" type="button"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg></button>
+            </div>
+            <div style="display:flex;align-items:center;">
+              <span class="char-count" id="charCount">280</span>
+              <button class="send-btn" id="postSubmit" disabled>Post</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feed" id="homeFeed"></div>
+    </section>
+
+    <!-- EXPLORE VIEW -->
+    <section class="view" id="view-explore">
+      <div class="center-header">
+        <h1>Explore</h1>
+        <div class="sub">Trending across KewerSMP</div>
+      </div>
+      <div class="hashtag-strip" id="exploreChips"></div>
+      <div class="feed" id="exploreFeed"></div>
+    </section>
+
+    <!-- NOTIFICATIONS VIEW -->
+    <section class="view" id="view-notifications">
+      <div class="center-header"><h1>Notifications</h1></div>
+      <div id="notifList"></div>
+    </section>
+
+    <!-- MESSAGES VIEW -->
+    <section class="view" id="view-messages">
+      <div class="center-header"><h1>Messages</h1></div>
+      <div class="msg-layout">
+        <div class="msg-list" id="convoList"></div>
+        <div class="chat-panel" id="chatPanel">
+          <div class="msg-empty">Select a conversation</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMMUNITIES VIEW -->
+    <section class="view" id="view-communities">
+      <div class="center-header">
+        <h1>Communities</h1>
+        <div class="sub">Find your crew inside KewerSMP</div>
+      </div>
+      <div class="comm-grid" id="commGrid"></div>
+    </section>
+
+    <!-- BOOKMARKS VIEW -->
+    <section class="view" id="view-bookmarks">
+      <div class="center-header"><h1>Bookmarks</h1></div>
+      <div class="feed" id="bookmarkFeed"></div>
+    </section>
+
+    <!-- PROFILE VIEW -->
+    <section class="view" id="view-profile">
+      <div class="center-header"><h1>You</h1><div class="sub" id="profilePostCount">0 posts</div></div>
+      <div class="profile-banner"></div>
+      <div class="profile-head">
+        <div class="avatar profile-avatar">YO</div>
+        <div class="profile-name-row">
+          <h2>You <svg class="badge-verified" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.1 3.1-.5 1 3 2.9 1.3-.9 3.1.9 3.1-2.9 1.3-1 3-3.1-.5L12 22l-2.4-2.1-3.1.5-1-3-2.9-1.3.9-3.1-.9-3.1 2.9-1.3 1-3 3.1.5z"/><path d="M9 12l2 2 4-4" stroke="#04160a" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></h2>
+        </div>
+        <div class="profile-handle">@you_kewersmp</div>
+        <div class="profile-bio">Building floating islands one block at a time. 🏝️ Survival · Redstone · Vibes only.</div>
+        <div class="profile-meta">
+          <span>⛏️ Minecraft: You_Kewer</span>
+          <span>💬 Discord: you#0001</span>
+          <span>📍 Spawn Island</span>
+        </div>
+        <div class="profile-stats">
+          <span><b id="statFollowing">12</b> <span class="lbl">Following</span></span>
+          <span><b id="statFollowers">248</b> <span class="lbl">Followers</span></span>
+        </div>
+      </div>
+      <div class="feed" id="profileFeed"></div>
+    </section>
+
+    <!-- SETTINGS VIEW -->
+    <section class="view" id="view-settings">
+      <div class="center-header"><h1>Settings</h1></div>
+      <div class="settings-group">
+        <h4>Appearance</h4>
+        <div class="settings-row">
+          <div><div class="s-title">Neon dark mode</div><div class="s-desc">The only theme on this server</div></div>
+          <label class="switch"><input type="checkbox" checked disabled><span class="track"></span></label>
+        </div>
+        <div class="settings-row">
+          <div><div class="s-title">Reduce motion</div><div class="s-desc">Minimize glow and animation effects</div></div>
+          <label class="switch"><input type="checkbox" id="reduceMotionToggle"><span class="track"></span></label>
+        </div>
+      </div>
+      <div class="settings-group">
+        <h4>Notifications</h4>
+        <div class="settings-row"><div><div class="s-title">Likes</div><div class="s-desc">Someone liked your post</div></div><label class="switch"><input type="checkbox" checked><span class="track"></span></label></div>
+        <div class="settings-row"><div><div class="s-title">New followers</div><div class="s-desc">Someone followed you</div></div><label class="switch"><input type="checkbox" checked><span class="track"></span></label></div>
+        <div class="settings-row"><div><div class="s-title">Server announcements</div><div class="s-desc">Updates from KewerSMP staff</div></div><label class="switch"><input type="checkbox" checked><span class="track"></span></label></div>
+      </div>
+      <div class="settings-group">
+        <h4>Privacy & Security</h4>
+        <div class="settings-row"><div><div class="s-title">Two-factor authentication</div><div class="s-desc">Extra login protection</div></div><label class="switch"><input type="checkbox"><span class="track"></span></label></div>
+        <div class="settings-row"><div><div class="s-title">Private profile</div><div class="s-desc">Only followers see your posts</div></div><label class="switch"><input type="checkbox"><span class="track"></span></label></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= RIGHT SIDEBAR ================= -->
+  <aside class="sidebar-right">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="searchInput" placeholder="Search KewerSMP">
+    </div>
+
+    <div class="panel">
+      <h3>Server status</h3>
+      <div class="server-card">
+        <div class="server-status-row">
+          <span class="badge-online pulse-dot"></span>
+          <span class="label">ONLINE</span>
+        </div>
+        <div class="server-ip"><span>play.kewersmp.gg</span><span>19132</span></div>
+        <div class="server-players">🎮 87 / 150 players online</div>
+        <button class="join-btn animated">Copy server IP</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Trending on KewerSMP</h3>
+      <div id="trendList"></div>
+      <a href="#" class="see-more">Show more</a>
+    </div>
+
+    <div class="panel">
+      <h3>Who to follow</h3>
+      <div id="suggestList"></div>
+      <a href="#" class="see-more">Show more</a>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+/* ============ STATE ============ */
+const users = [
+  {id:'u1', name:'Nira', handle:'@nira.builds', staff:true, online:true, init:'NI'},
+  {id:'u2', name:'Kael Forge', handle:'@kaelforge', staff:false, online:true, init:'KF'},
+  {id:'u3', name:'Pixel Wren', handle:'@pixelwren', staff:false, online:false, init:'PW'},
+  {id:'u4', name:'Astra', handle:'@astra_mc', staff:true, online:true, init:'AS'},
+  {id:'u5', name:'Bramblecore', handle:'@bramblecore', staff:false, online:false, init:'BC'},
+  {id:'u6', name:'Ori', handle:'@ori.tnt', staff:false, online:true, init:'OR'},
+];
+
+let posts = [
+  {id:1, user:users[0], time:'2h', text:'Just finished the redstone elevator at spawn 🛗 come test it out, it only explodes 10% of the time now #redstone', media:true, likes:142, reposts:18, replies:9, views:'3.4K', liked:false, reposted:false, bookmarked:false},
+  {id:2, user:users[1], time:'4h', text:'PSA: the nether portal near the old quarry is bugged, use the one at Trader\'s Row instead. Staff are patching it tonight. #announcement', media:false, likes:87, reposts:34, replies:22, views:'5.1K', liked:false, reposted:false, bookmarked:false},
+  {id:3, user:users[3], time:'6h', text:'🏝️ Season 3 Floating Islands update is officially LIVE. New biomes, new loot tables, and a brand new PvP arena above the clouds. Patch notes in #announcements', media:true, likes:410, reposts:96, replies:51, views:'21K', liked:false, reposted:false, bookmarked:false},
+  {id:4, user:users[2], time:'8h', text:'made a lil pixel art of the spawn castle, taking commissions for base logos 🎨', media:true, likes:63, reposts:5, replies:14, views:'1.2K', liked:false, reposted:false, bookmarked:false},
+  {id:5, user:users[4], time:'11h', text:'anyone want to team up for the new dungeon raid tonight? need a tank and a healer, we go live at 9PM server time #lookingforgroup', media:false, likes:29, reposts:3, replies:17, views:'880', liked:false, reposted:false, bookmarked:false},
+  {id:6, user:users[5], time:'1d', text:'my base got raided while i was offline... time to build actual defenses instead of relying on vibes 💀', media:false, likes:201, reposts:12, replies:38, views:'6.7K', liked:false, reposted:false, bookmarked:false},
+];
+let nextPostId = posts.length + 1;
+
+const trends = [
+  {cat:'Server · Trending', tag:'#FloatingIslands', count:'12.4K posts'},
+  {cat:'Events', tag:'#DungeonRaid', count:'3,290 posts'},
+  {cat:'Server · Trending', tag:'#redstone', count:'2,108 posts'},
+  {cat:'Community', tag:'#SpawnCastle', count:'944 posts'},
+  {cat:'Server', tag:'#lookingforgroup', count:'611 posts'},
+];
+
+const communities = [
+  {id:'c1', name:'Redstone Engineers', desc:'Circuits, farms, and contraptions.', members:'4.1K'},
+  {id:'c2', name:'PvP Arena Guild', desc:'Tournaments and duels every weekend.', members:'2.8K'},
+  {id:'c3', name:'Build Team', desc:'Collaborative megabuilds and spawn projects.', members:'1.6K'},
+  {id:'c4', name:'New Players HQ', desc:'Guides, tips, and friendly faces.', members:'5.3K'},
+];
+const joinedCommunities = new Set();
+
+const notifications = [
+  {icon:'like', unread:true, html:'<b>Nira</b> liked your post', sub:'2m ago'},
+  {icon:'follow', unread:true, html:'<b>Astra</b> started following you', sub:'40m ago'},
+  {icon:'repost', unread:true, html:'<b>Kael Forge</b> reposted your post', sub:'1h ago'},
+  {icon:'reply', unread:false, html:'<b>Pixel Wren</b> replied: "this is sick 🔥"', sub:'3h ago'},
+  {icon:'follow', unread:false, html:'<b>Bramblecore</b> started following you', sub:'1d ago'},
+];
+
+const conversations = [
+  {id:'m1', name:'Nira', init:'NI', last:'see you at spawn in 10', unread:true, msgs:[
+    {from:'them', text:'you around for the raid tonight?'},
+    {from:'me', text:'yeah just finishing gearing up'},
+    {from:'them', text:'see you at spawn in 10'},
+  ]},
+  {id:'m2', name:'Kael Forge', init:'KF', last:'sent an image', unread:true, msgs:[
+    {from:'them', text:'check out this farm design'},
+    {from:'me', text:'oh that\'s clean, send schematic?'},
+  ]},
+  {id:'m3', name:'Build Team', init:'BT', last:'Ori: pushing the new gate today', unread:false, msgs:[
+    {from:'them', text:'Ori: pushing the new gate today'},
+    {from:'me', text:'nice, i\'ll help texture it'},
+  ]},
+];
+
+/* ============ ICONS ============ */
+const ICONS = {
+  reply:'<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-8.5 8.5A8.6 8.6 0 0 1 8 19l-5 1 1-5a8.6 8.6 0 0 1-1-4A8.4 8.4 0 0 1 11.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>',
+  repost:'<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
+  like:'<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
+  views:'<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12s3.5-7 9-7 9 7 9 7-3.5 7-9 7-9-7-9-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+  bookmark:'<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  share:'<svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
+  verified:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 2.1 3.1-.5 1 3 2.9 1.3-.9 3.1.9 3.1-2.9 1.3-1 3-3.1-.5L12 22l-2.4-2.1-3.1.5-1-3-2.9-1.3.9-3.1-.9-3.1 2.9-1.3 1-3 3.1.5z"/></svg>',
+  send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/></svg>'
+};
+function fmt(n){ if(typeof n!=='number') return n; return n>=1000? (n/1000).toFixed(1)+'K': n; }
+
+/* ============ RENDER: POST CARD ============ */
+function postCardHtml(p){
+  const nameRow = `
+    <span class="name">${p.user.name}</span>
+    ${p.user.staff?`<span class="badge-verified">${ICONS.verified}</span>`:''}
+    ${p.user.online?'<span class="badge-online" title="Online"></span>':''}
+    <span class="handle">${p.user.handle}</span>
+    <span class="dot">·</span>
+    <span class="time">${p.time}</span>`;
+  const textHtml = p.text.replace(/#(\w+)/g, '<span class="tag">#$1</span>');
+  return `
+  <article class="post-card" data-id="${p.id}">
+    <div class="avatar">${p.user.init}</div>
+    <div class="post-main">
+      <div class="post-head">${nameRow}</div>
+      <div class="post-text">${textHtml}</div>
+      ${p.media?`<div class="post-media">🖼️ media preview</div>`:''}
+      <div class="post-actions">
+        <button class="pa-btn reply" data-action="reply">${ICONS.reply}<span>${p.replies}</span></button>
+        <button class="pa-btn repost ${p.reposted?'active':''}" data-action="repost">${ICONS.repost}<span>${p.reposts}</span></button>
+        <button class="pa-btn like ${p.liked?'active':''}" data-action="like">${ICONS.like}<span>${p.likes}</span></button>
+        <button class="pa-btn views" data-action="views">${ICONS.views}<span>${p.views}</span></button>
+        <button class="pa-btn bookmark ${p.bookmarked?'active':''}" data-action="bookmark">${ICONS.bookmark}</button>
+        <button class="pa-btn share" data-action="share">${ICONS.share}</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderList(container, list, emptyTitle, emptyDesc){
+  if(!list.length){
+    container.innerHTML = `<div class="empty-state"><h3>${emptyTitle}</h3><p>${emptyDesc}</p></div>`;
+    return;
+  }
+  container.innerHTML = list.map(postCardHtml).join('');
+}
+
+function renderHome(){ renderList(document.getElementById('homeFeed'), posts, 'No posts yet', 'Be the first to post something on KewerSMP.'); }
+function renderExplore(filterTag){
+  let list = posts;
+  if(filterTag) list = posts.filter(p=>p.text.toLowerCase().includes(filterTag.toLowerCase()));
+  renderList(document.getElementById('exploreFeed'), list, 'Nothing here', 'Try a different tag or search term.');
+}
+function renderBookmarks(){
+  renderList(document.getElementById('bookmarkFeed'), posts.filter(p=>p.bookmarked), 'No bookmarks yet', 'Posts you bookmark will show up here.');
+}
+function renderProfile(){
+  const mine = posts.filter(p=>p.user.id==='you');
+  document.getElementById('profilePostCount').textContent = mine.length + ' posts';
+  renderList(document.getElementById('profileFeed'), mine, 'No posts yet', 'Anything you post will appear on your profile.');
+}
+
+/* ============ RENDER: SIDEBARS ============ */
+function renderTrends(){
+  document.getElementById('trendList').innerHTML = trends.map(t=>`
+    <div class="trend-item" data-tag="${t.tag}">
+      <div class="trend-cat">${t.cat}</div>
+      <div class="trend-tag">${t.tag}</div>
+      <div class="trend-count">${t.count}</div>
+    </div>`).join('');
+}
+function renderSuggested(){
+  document.getElementById('suggestList').innerHTML = users.slice(0,4).map(u=>`
+    <div class="user-item" data-uid="${u.id}">
+      <div class="avatar" style="width:38px;height:38px;font-size:13px;">${u.init}</div>
+      <div class="u-text">
+        <div class="u-name">${u.name}</div>
+        <div class="u-handle">${u.handle}</div>
+      </div>
+      <button class="follow-btn" data-follow="${u.id}">Follow</button>
+    </div>`).join('');
+}
+function renderExploreChips(){
+  const chips = ['All', ...trends.map(t=>t.tag)];
+  document.getElementById('exploreChips').innerHTML = chips.map((c,i)=>
+    `<button class="chip ${i===0?'active':''}" data-chip="${c==='All'?'':c.replace('#','')}">${c}</button>`).join('');
+}
+
+/* ============ RENDER: NOTIFICATIONS ============ */
+function renderNotifications(){
+  document.getElementById('notifList').innerHTML = notifications.map(n=>`
+    <div class="notif-item ${n.unread?'unread':''}">
+      <div class="notif-icon ${n.icon}">${ICONS[n.icon]}</div>
+      <div>
+        <div class="notif-text">${n.html}</div>
+        <div class="notif-sub">${n.sub}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ============ RENDER: MESSAGES ============ */
+let activeConvoId = null;
+function renderConvoList(){
+  document.getElementById('convoList').innerHTML = conversations.map(c=>`
+    <div class="convo ${c.id===activeConvoId?'active':''}" data-cid="${c.id}">
+      <div class="avatar" style="width:42px;height:42px;font-size:14px;">${c.init}</div>
+      <div style="min-width:0;">
+        <div class="c-name">${c.name}</div>
+        <div class="c-last">${c.last}</div>
+      </div>
+      ${c.unread?'<span class="unread-dot"></span>':''}
+    </div>`).join('');
+}
+function renderChatPanel(){
+  const panel = document.getElementById('chatPanel');
+  const c = conversations.find(x=>x.id===activeConvoId);
+  if(!c){ panel.innerHTML = '<div class="msg-empty">Select a conversation</div>'; return; }
+  panel.innerHTML = `
+    <div class="chat-head"><div class="avatar" style="width:32px;height:32px;font-size:12px;">${c.init}</div>${c.name}</div>
+    <div class="chat-body" id="chatBody">
+      ${c.msgs.map(m=>`<div class="bubble ${m.from==='me'?'me':'them'}">${m.text}</div>`).join('')}
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="Message ${c.name}...">
+      <button id="chatSend">${ICONS.send}</button>
+    </div>`;
+  const body = document.getElementById('chatBody');
+  body.scrollTop = body.scrollHeight;
+  document.getElementById('chatSend').addEventListener('click', sendChat);
+  document.getElementById('chatInput').addEventListener('keydown', e=>{ if(e.key==='Enter') sendChat(); });
+}
+function sendChat(){
+  const input = document.getElementById('chatInput');
+  const val = input.value.trim();
+  if(!val) return;
+  const c = conversations.find(x=>x.id===activeConvoId);
+  c.msgs.push({from:'me', text:val});
+  c.last = val;
+  input.value='';
+  renderChatPanel();
+  renderConvoList();
+}
+
+/* ============ RENDER: COMMUNITIES ============ */
+function renderCommunities(){
+  document.getElementById('commGrid').innerHTML = communities.map(c=>`
+    <div class="comm-card">
+      <div class="comm-banner"></div>
+      <div class="comm-body">
+        <h4>${c.name}</h4>
+        <p>${c.desc}</p>
+        <div class="comm-members">${c.members} members</div>
+        <button class="join-comm-btn ${joinedCommunities.has(c.id)?'joined':''}" data-cid="${c.id}">
+          ${joinedCommunities.has(c.id)?'Joined':'Join'}
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+/* ============ VIEW SWITCHING ============ */
+const views = ['home','explore','notifications','messages','communities','bookmarks','profile','settings'];
+function switchView(view){
+  views.forEach(v=>{
+    document.getElementById('view-'+v).classList.toggle('active', v===view);
+  });
+  document.querySelectorAll('.nav-item').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.view===view);
+  });
+  if(view==='notifications'){
+    notifications.forEach(n=>n.unread=false);
+    document.getElementById('notifBadge').style.display='none';
+    renderNotifications();
+  }
+}
+document.getElementById('navList').addEventListener('click', e=>{
+  const btn = e.target.closest('.nav-item');
+  if(!btn) return;
+  switchView(btn.dataset.view);
+});
+document.getElementById('sidebarPostBtn').addEventListener('click', ()=>{
+  switchView('home');
+  document.getElementById('postInput').focus();
+});
+
+/* ============ COMPOSER ============ */
+const postInput = document.getElementById('postInput');
+const charCount = document.getElementById('charCount');
+const postSubmit = document.getElementById('postSubmit');
+postInput.addEventListener('input', ()=>{
+  const remaining = 280 - postInput.value.length;
+  charCount.textContent = remaining;
+  charCount.classList.toggle('warn', remaining < 20);
+  postSubmit.disabled = postInput.value.trim().length===0 || remaining<0;
+});
+postSubmit.addEventListener('click', ()=>{
+  const text = postInput.value.trim();
+  if(!text) return;
+  posts.unshift({
+    id: nextPostId++, user: {id:'you', name:'You', handle:'@you_kewersmp', staff:false, online:true, init:'YO'},
+    time:'now', text, media:false, likes:0, reposts:0, replies:0, views:'0', liked:false, reposted:false, bookmarked:false
+  });
+  postInput.value='';
+  charCount.textContent='280';
+  postSubmit.disabled=true;
+  renderHome();
+  renderProfile();
+});
+
+/* ============ POST ACTIONS (event delegation) ============ */
+function findPost(id){ return posts.find(p=>p.id==id); }
+function handlePostAction(e){
+  const btn = e.target.closest('.pa-btn');
+  if(!btn) return;
+  const card = e.target.closest('.post-card');
+  const p = findPost(card.dataset.id);
+  if(!p) return;
+  const action = btn.dataset.action;
+  if(action==='like'){ p.liked=!p.liked; p.likes += p.liked?1:-1; }
+  if(action==='repost'){ p.reposted=!p.reposted; p.reposts += p.reposted?1:-1; }
+  if(action==='bookmark'){ p.bookmarked=!p.bookmarked; }
+  if(action==='reply'){ p.replies += 0; /* demo only */ }
+  renderHome(); renderExplore(); renderBookmarks(); renderProfile();
+}
+['homeFeed','exploreFeed','bookmarkFeed','profileFeed'].forEach(id=>{
+  document.getElementById(id).addEventListener('click', handlePostAction);
+});
+
+/* ============ EXPLORE CHIPS + SEARCH ============ */
+document.getElementById('exploreChips').addEventListener('click', e=>{
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  renderExplore(chip.dataset.chip);
+});
+document.getElementById('searchInput').addEventListener('input', e=>{
+  const q = e.target.value.trim();
+  switchView('explore');
+  renderExplore(q);
+});
+
+/* ============ TRENDS / FOLLOW ============ */
+document.getElementById('trendList').addEventListener('click', e=>{
+  const item = e.target.closest('.trend-item');
+  if(!item) return;
+  document.getElementById('searchInput').value = item.dataset.tag;
+  switchView('explore');
+  renderExplore(item.dataset.tag.replace('#',''));
+});
+document.getElementById('suggestList').addEventListener('click', e=>{
+  const btn = e.target.closest('.follow-btn');
+  if(!btn) return;
+  const following = btn.classList.toggle('following');
+  btn.textContent = following ? 'Following' : 'Follow';
+  const statFollowing = document.getElementById('statFollowing');
+  statFollowing.textContent = parseInt(statFollowing.textContent) + (following?1:-1);
+});
+
+/* ============ COMMUNITIES ============ */
+document.getElementById('commGrid').addEventListener('click', e=>{
+  const btn = e.target.closest('.join-comm-btn');
+  if(!btn) return;
+  const cid = btn.dataset.cid;
+  if(joinedCommunities.has(cid)){ joinedCommunities.delete(cid); }
+  else { joinedCommunities.add(cid); }
+  renderCommunities();
+});
+
+/* ============ MESSAGES ============ */
+document.getElementById('convoList').addEventListener('click', e=>{
+  const convo = e.target.closest('.convo');
+  if(!convo) return;
+  activeConvoId = convo.dataset.cid;
+  const c = conversations.find(x=>x.id===activeConvoId);
+  c.unread = false;
+  renderConvoList();
+  renderChatPanel();
+  updateMsgBadge();
+});
+function updateMsgBadge(){
+  const unread = conversations.filter(c=>c.unread).length;
+  const badge = document.getElementById('msgBadge');
+  badge.textContent = unread;
+  badge.style.display = unread? 'inline-block':'none';
+}
+
+/* ============ SETTINGS: reduce motion ============ */
+document.getElementById('reduceMotionToggle').addEventListener('change', e=>{
+  document.body.style.setProperty('--motion', e.target.checked?'0':'1');
+  document.querySelectorAll('.animated, .pulse-dot, .glow-hover').forEach(el=>{
+    el.style.transition = e.target.checked ? 'none' : '';
+    el.style.animation = e.target.checked ? 'none' : '';
+  });
+});
+
+/* ============ COPY SERVER IP ============ */
+document.querySelector('.join-btn').addEventListener('click', function(){
+  const original = this.textContent;
+  this.textContent = 'Copied ✓';
+  setTimeout(()=>{ this.textContent = original; }, 1500);
+});
+
+/* ============ INIT ============ */
+renderHome();
+renderExplore();
+renderExploreChips();
+renderTrends();
+renderSuggested();
+renderNotifications();
+renderConvoList();
+renderCommunities();
+renderBookmarks();
+renderProfile();
+updateMsgBadge();
+</script>
+</body>
+</html>
